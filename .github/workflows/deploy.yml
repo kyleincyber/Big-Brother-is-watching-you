@@ -1,0 +1,28 @@
+name: Build and deploy site
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build site
+        run: |
+          mkdir -p public/downloads
+          cp index.html public/
+          cp CNAME public/
+          touch public/.nojekyll
+          head -c 20971520 /dev/urandom > public/downloads/1984-20MB.bin
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages
